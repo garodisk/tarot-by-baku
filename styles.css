@@ -756,6 +756,12 @@ h3 {
   font-size: 0.92rem;
 }
 
+.contact-panel .contact-zoom {
+  border-color: rgba(243, 201, 120, 0.52);
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--white);
+}
+
 .site-footer {
   display: flex;
   flex-wrap: wrap;
