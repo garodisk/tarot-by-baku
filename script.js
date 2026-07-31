@@ -187,6 +187,7 @@ if (feedbackForm) {
         rating,
         name: name || null,
         message: message || null,
+        approved: Boolean(message),
       };
       const response = await fetch(`${supabaseUrl}/rest/v1/feedback`, {
         method: "POST",
@@ -195,22 +196,10 @@ if (feedbackForm) {
           "Content-Type": "application/json",
           Prefer: "return=minimal",
         },
-        body: JSON.stringify({ ...payload, approved: Boolean(message) }),
+        body: JSON.stringify(payload),
       });
 
-      if (!response.ok) {
-        const fallbackResponse = await fetch(`${supabaseUrl}/rest/v1/feedback`, {
-          method: "POST",
-          headers: {
-            ...supabaseHeaders,
-            "Content-Type": "application/json",
-            Prefer: "return=minimal",
-          },
-          body: JSON.stringify(payload),
-        });
-
-        if (!fallbackResponse.ok) throw new Error("Unable to submit feedback");
-      }
+      if (!response.ok) throw new Error("Unable to submit feedback");
 
       feedbackForm.reset();
       ratingInput.value = "";
@@ -223,7 +212,9 @@ if (feedbackForm) {
         ? "Thank you. Your written review was saved and will appear on the website."
         : "Thank you. Your rating was saved and will appear after approval.";
     } catch (error) {
-      feedbackStatus.textContent = "We could not save your review. Please try again.";
+      feedbackStatus.textContent = message
+        ? "We could not publish your written review. Please try again or send it on WhatsApp."
+        : "We could not save your rating. Please try again.";
     } finally {
       submitButton.disabled = false;
       submitButton.textContent = "Send review";
