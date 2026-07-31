@@ -132,7 +132,7 @@ async function loadRecentFeedback() {
     const reviews = await response.json();
     const summaryReviews = reviews.length ? reviews : starterReviews;
 
-    if (feedbackList) renderReviews([...starterReviews, ...reviews].slice(0, 5));
+    if (feedbackList) renderReviews([...reviews, ...starterReviews]);
     renderRatingSummary(summaryReviews, !reviews.length);
   } catch (error) {
     if (feedbackList) renderReviews(starterReviews);
