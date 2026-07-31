@@ -37,13 +37,13 @@ const starterReviews = [
     rating: 5,
     name: "Aakriti",
     message:
-      "Tarot by Baku helped me steer my career. Highly recommend to anyone facing career questions.",
+      "Baku Bagla's guidance helped me find clarity in my career direction. Highly recommended for anyone feeling stuck professionally.",
     created_at: "2026-07-30T00:00:00.000Z",
   },
   {
     rating: 5,
     name: "Saket",
-    message: "Really helpful guidance.",
+    message: "Baku's reading was really helpful and gave me clarity in my relationship situation.",
     created_at: "2026-07-30T00:00:00.000Z",
   },
 ];
