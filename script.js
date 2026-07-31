@@ -32,6 +32,7 @@ const supabaseHeaders = {
   apikey: supabaseKey,
   Authorization: `Bearer ${supabaseKey}`,
 };
+const publishedFeedbackFilter = "or=(approved.eq.true,message.not.is.null)";
 
 const starterReviews = [
   {
@@ -98,16 +99,16 @@ function renderRatingSummary(reviews, isFallback = false) {
 
   if (!ratings.length) {
     averageNode.textContent = "0.0";
-    countNode.textContent = "No approved ratings yet";
+    countNode.textContent = "No published ratings yet";
     starsNode.textContent = "\u2606\u2606\u2606\u2606\u2606";
-    feedbackSummary.setAttribute("aria-label", "No approved ratings yet");
+    feedbackSummary.setAttribute("aria-label", "No published ratings yet");
     return;
   }
 
   const average = ratings.reduce((sum, rating) => sum + rating, 0) / ratings.length;
   const roundedStars = Math.max(0, Math.min(5, Math.round(average)));
   const reviewLabel = ratings.length === 1 ? "review" : "reviews";
-  const sourceLabel = isFallback ? "featured" : "approved";
+  const sourceLabel = isFallback ? "featured" : "published";
 
   averageNode.textContent = average.toFixed(1);
   countNode.textContent = `Average from ${ratings.length} ${sourceLabel} ${reviewLabel}`;
@@ -123,7 +124,7 @@ async function loadRecentFeedback() {
 
   try {
     const response = await fetch(
-      `${supabaseUrl}/rest/v1/feedback?select=rating,name,message,created_at&approved=eq.true&order=created_at.desc`,
+      `${supabaseUrl}/rest/v1/feedback?select=rating,name,message,created_at&${publishedFeedbackFilter}&order=created_at.desc`,
       { headers: supabaseHeaders }
     );
 
@@ -182,6 +183,11 @@ if (feedbackForm) {
     feedbackStatus.textContent = "";
 
     try {
+      const payload = {
+        rating,
+        name: name || null,
+        message: message || null,
+      };
       const response = await fetch(`${supabaseUrl}/rest/v1/feedback`, {
         method: "POST",
         headers: {
@@ -189,14 +195,22 @@ if (feedbackForm) {
           "Content-Type": "application/json",
           Prefer: "return=minimal",
         },
-        body: JSON.stringify({
-          rating,
-          name: name || null,
-          message: message || null,
-        }),
+        body: JSON.stringify({ ...payload, approved: Boolean(message) }),
       });
 
-      if (!response.ok) throw new Error("Unable to submit feedback");
+      if (!response.ok) {
+        const fallbackResponse = await fetch(`${supabaseUrl}/rest/v1/feedback`, {
+          method: "POST",
+          headers: {
+            ...supabaseHeaders,
+            "Content-Type": "application/json",
+            Prefer: "return=minimal",
+          },
+          body: JSON.stringify(payload),
+        });
+
+        if (!fallbackResponse.ok) throw new Error("Unable to submit feedback");
+      }
 
       feedbackForm.reset();
       ratingInput.value = "";
@@ -205,7 +219,9 @@ if (feedbackForm) {
         button.setAttribute("aria-pressed", "false");
       });
       ratingLabel.textContent = "Select your rating";
-      feedbackStatus.textContent = "Thank you. Your review was saved and will appear after approval.";
+      feedbackStatus.textContent = message
+        ? "Thank you. Your written review was saved and will appear on the website."
+        : "Thank you. Your rating was saved and will appear after approval.";
     } catch (error) {
       feedbackStatus.textContent = "We could not save your review. Please try again.";
     } finally {
