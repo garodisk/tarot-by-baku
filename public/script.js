@@ -131,10 +131,10 @@ async function loadRecentFeedback() {
     if (!response.ok) throw new Error("Unable to load feedback");
 
     const reviews = await response.json();
-    const summaryReviews = reviews.length ? reviews : starterReviews;
+    const visibleReviews = [...reviews, ...starterReviews];
 
-    if (feedbackList) renderReviews([...reviews, ...starterReviews]);
-    renderRatingSummary(summaryReviews, !reviews.length);
+    if (feedbackList) renderReviews(visibleReviews);
+    renderRatingSummary(visibleReviews, !reviews.length);
   } catch (error) {
     if (feedbackList) renderReviews(starterReviews);
     renderRatingSummary(starterReviews, true);
