@@ -844,9 +844,59 @@ h3 {
   background: var(--paper);
 }
 
-.recent-feedback .section-heading > p:last-child {
+.feedback-heading > div:first-child > p:last-child {
   color: var(--muted);
   font-size: 1.02rem;
+}
+
+.feedback-heading {
+  display: flex;
+  width: 100%;
+  align-items: end;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.feedback-heading > div:first-child {
+  max-width: 760px;
+}
+
+.feedback-summary {
+  display: grid;
+  min-width: min(280px, 100%);
+  border: 1px solid rgba(191, 133, 40, 0.28);
+  border-radius: var(--radius);
+  padding: 18px 20px;
+  background:
+    linear-gradient(135deg, rgba(255, 248, 236, 0.94), rgba(241, 210, 155, 0.26)),
+    var(--card);
+  box-shadow: 0 18px 46px rgba(48, 20, 63, 0.09);
+}
+
+.feedback-summary-stars {
+  color: var(--gold);
+  font-size: 1rem;
+  letter-spacing: 2px;
+}
+
+.feedback-summary strong {
+  color: var(--plum);
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: clamp(2.1rem, 4vw, 3.2rem);
+  line-height: 1;
+}
+
+.feedback-summary small {
+  margin-left: 2px;
+  color: var(--muted);
+  font-family: "Inter", Arial, sans-serif;
+  font-size: 0.95rem;
+}
+
+.feedback-summary > span:last-child {
+  color: var(--muted);
+  font-size: 0.84rem;
+  font-weight: 700;
 }
 
 .feedback-list {
@@ -1134,6 +1184,15 @@ h3 {
   .ngo-gallery,
   .feedback-list {
     grid-template-columns: 1fr;
+  }
+
+  .feedback-heading {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .feedback-summary {
+    min-width: 0;
   }
 
   .portrait-pair img,

@@ -25,6 +25,7 @@ window.addEventListener("scroll", updateHeader, { passive: true });
 
 const feedbackForm = document.querySelector("[data-feedback-form]");
 const feedbackList = document.querySelector("[data-feedback-list]");
+const feedbackSummary = document.querySelector("[data-feedback-summary]");
 const supabaseUrl = "https://nsnpnmouhjvvmgmlkgos.supabase.co";
 const supabaseKey = "sb_publishable_pVSY7SB7CK5rBcov82gxmg_5ONLUXG7";
 const supabaseHeaders = {
@@ -81,22 +82,61 @@ function renderReviews(reviews) {
   });
 }
 
+function getValidRatings(reviews) {
+  return reviews
+    .map((review) => Number(review.rating))
+    .filter((rating) => Number.isFinite(rating) && rating >= 1 && rating <= 5);
+}
+
+function renderRatingSummary(reviews, isFallback = false) {
+  if (!feedbackSummary) return;
+
+  const ratings = getValidRatings(reviews);
+  const averageNode = feedbackSummary.querySelector("[data-feedback-average]");
+  const countNode = feedbackSummary.querySelector("[data-feedback-count]");
+  const starsNode = feedbackSummary.querySelector("[data-feedback-stars]");
+
+  if (!ratings.length) {
+    averageNode.textContent = "0.0";
+    countNode.textContent = "No approved ratings yet";
+    starsNode.textContent = "\u2606\u2606\u2606\u2606\u2606";
+    feedbackSummary.setAttribute("aria-label", "No approved ratings yet");
+    return;
+  }
+
+  const average = ratings.reduce((sum, rating) => sum + rating, 0) / ratings.length;
+  const roundedStars = Math.max(0, Math.min(5, Math.round(average)));
+  const reviewLabel = ratings.length === 1 ? "review" : "reviews";
+  const sourceLabel = isFallback ? "featured" : "approved";
+
+  averageNode.textContent = average.toFixed(1);
+  countNode.textContent = `Average from ${ratings.length} ${sourceLabel} ${reviewLabel}`;
+  starsNode.textContent = "\u2605".repeat(roundedStars) + "\u2606".repeat(5 - roundedStars);
+  feedbackSummary.setAttribute(
+    "aria-label",
+    `${average.toFixed(1)} out of 5 average rating from ${ratings.length} ${sourceLabel} ${reviewLabel}`
+  );
+}
+
 async function loadRecentFeedback() {
-  if (!feedbackList) return;
+  if (!feedbackList && !feedbackSummary) return;
 
   try {
     const response = await fetch(
-      `${supabaseUrl}/rest/v1/feedback?select=rating,name,message,created_at&approved=eq.true&order=created_at.desc&limit=5`,
+      `${supabaseUrl}/rest/v1/feedback?select=rating,name,message,created_at&approved=eq.true&order=created_at.desc`,
       { headers: supabaseHeaders }
     );
 
     if (!response.ok) throw new Error("Unable to load feedback");
 
     const reviews = await response.json();
+    const summaryReviews = reviews.length ? reviews : starterReviews;
 
-    renderReviews([...starterReviews, ...reviews].slice(0, 5));
+    if (feedbackList) renderReviews([...starterReviews, ...reviews].slice(0, 5));
+    renderRatingSummary(summaryReviews, !reviews.length);
   } catch (error) {
-    renderReviews(starterReviews);
+    if (feedbackList) renderReviews(starterReviews);
+    renderRatingSummary(starterReviews, true);
   }
 }
 
