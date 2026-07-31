@@ -58,10 +58,11 @@ async function loadRecentFeedback() {
       const card = document.createElement("article");
       card.className = "feedback-card";
 
+      const rating = Math.max(0, Math.min(5, Number(review.rating) || 0));
       const stars = document.createElement("div");
       stars.className = "feedback-card-stars";
-      stars.setAttribute("aria-label", `${review.rating} out of 5 stars`);
-      stars.textContent = "★".repeat(review.rating) + "☆".repeat(5 - review.rating);
+      stars.setAttribute("aria-label", `${rating} out of 5 stars`);
+      stars.textContent = "\u2605".repeat(rating) + "\u2606".repeat(5 - rating);
 
       const quote = document.createElement("p");
       quote.textContent = review.message || "Thank you for a wonderful experience.";
@@ -103,7 +104,7 @@ if (feedbackForm) {
       button.classList.toggle("is-selected", isSelected);
       button.setAttribute("aria-pressed", String(Number(button.dataset.rating) === rating));
     });
-    ratingLabel.textContent = `${rating} out of 5 — ${ratingMessages[rating - 1]}`;
+    ratingLabel.textContent = `${rating} out of 5 - ${ratingMessages[rating - 1]}`;
     feedbackStatus.textContent = "";
   }
 
@@ -127,7 +128,7 @@ if (feedbackForm) {
     const submitButton = feedbackForm.querySelector(".feedback-submit");
 
     submitButton.disabled = true;
-    submitButton.textContent = "Submitting…";
+    submitButton.textContent = "Submitting...";
     feedbackStatus.textContent = "";
 
     try {
