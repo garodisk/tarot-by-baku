@@ -32,6 +32,55 @@ const supabaseHeaders = {
   Authorization: `Bearer ${supabaseKey}`,
 };
 
+const starterReviews = [
+  {
+    rating: 5,
+    name: "Aakriti",
+    message:
+      "Tarot by Baku helped me steer my career. Highly recommend to anyone facing career questions.",
+    created_at: "2026-07-30T00:00:00.000Z",
+  },
+  {
+    rating: 5,
+    name: "Saket",
+    message: "Really helpful guidance.",
+    created_at: "2026-07-30T00:00:00.000Z",
+  },
+];
+
+function renderReviews(reviews) {
+  feedbackList.replaceChildren();
+
+  reviews.forEach((review) => {
+    const card = document.createElement("article");
+    card.className = "feedback-card";
+
+    const rating = Math.max(0, Math.min(5, Number(review.rating) || 0));
+    const stars = document.createElement("div");
+    stars.className = "feedback-card-stars";
+    stars.setAttribute("aria-label", `${rating} out of 5 stars`);
+    stars.textContent = "\u2605".repeat(rating) + "\u2606".repeat(5 - rating);
+
+    const quote = document.createElement("p");
+    quote.textContent = review.message || "Thank you for sharing your experience.";
+
+    const footer = document.createElement("footer");
+    const reviewer = document.createElement("strong");
+    reviewer.textContent = review.name || "Anonymous";
+    const date = document.createElement("time");
+    date.dateTime = review.created_at;
+    date.textContent = new Intl.DateTimeFormat("en", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    }).format(new Date(review.created_at));
+
+    footer.append(reviewer, date);
+    card.append(stars, quote, footer);
+    feedbackList.append(card);
+  });
+}
+
 async function loadRecentFeedback() {
   if (!feedbackList) return;
 
@@ -44,49 +93,10 @@ async function loadRecentFeedback() {
     if (!response.ok) throw new Error("Unable to load feedback");
 
     const reviews = await response.json();
-    feedbackList.replaceChildren();
 
-    if (!reviews.length) {
-      const emptyMessage = document.createElement("p");
-      emptyMessage.className = "feedback-empty";
-      emptyMessage.textContent = "Approved reviews will appear here soon.";
-      feedbackList.append(emptyMessage);
-      return;
-    }
-
-    reviews.forEach((review) => {
-      const card = document.createElement("article");
-      card.className = "feedback-card";
-
-      const rating = Math.max(0, Math.min(5, Number(review.rating) || 0));
-      const stars = document.createElement("div");
-      stars.className = "feedback-card-stars";
-      stars.setAttribute("aria-label", `${rating} out of 5 stars`);
-      stars.textContent = "\u2605".repeat(rating) + "\u2606".repeat(5 - rating);
-
-      const quote = document.createElement("p");
-      quote.textContent = review.message || "Thank you for sharing your experience.";
-
-      const footer = document.createElement("footer");
-      const reviewer = document.createElement("strong");
-      reviewer.textContent = review.name || "Anonymous";
-      const date = document.createElement("time");
-      date.dateTime = review.created_at;
-      date.textContent = new Intl.DateTimeFormat("en", {
-        month: "short",
-        day: "numeric",
-        year: "numeric",
-      }).format(new Date(review.created_at));
-
-      footer.append(reviewer, date);
-      card.append(stars, quote, footer);
-      feedbackList.append(card);
-    });
+    renderReviews([...starterReviews, ...reviews].slice(0, 5));
   } catch (error) {
-    const errorMessage = document.createElement("p");
-    errorMessage.className = "feedback-empty";
-    errorMessage.textContent = "Reviews are unavailable right now.";
-    feedbackList.replaceChildren(errorMessage);
+    renderReviews(starterReviews);
   }
 }
 
