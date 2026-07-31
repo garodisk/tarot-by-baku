@@ -49,7 +49,7 @@ async function loadRecentFeedback() {
     if (!reviews.length) {
       const emptyMessage = document.createElement("p");
       emptyMessage.className = "feedback-empty";
-      emptyMessage.textContent = "No published feedback yet. Be the first to share your experience.";
+      emptyMessage.textContent = "Approved reviews will appear here soon.";
       feedbackList.append(emptyMessage);
       return;
     }
@@ -65,7 +65,7 @@ async function loadRecentFeedback() {
       stars.textContent = "\u2605".repeat(rating) + "\u2606".repeat(5 - rating);
 
       const quote = document.createElement("p");
-      quote.textContent = review.message || "Thank you for a wonderful experience.";
+      quote.textContent = review.message || "Thank you for sharing your experience.";
 
       const footer = document.createElement("footer");
       const reviewer = document.createElement("strong");
@@ -85,7 +85,7 @@ async function loadRecentFeedback() {
   } catch (error) {
     const errorMessage = document.createElement("p");
     errorMessage.className = "feedback-empty";
-    errorMessage.textContent = "Recent feedback is unavailable right now.";
+    errorMessage.textContent = "Reviews are unavailable right now.";
     feedbackList.replaceChildren(errorMessage);
   }
 }
@@ -95,7 +95,7 @@ if (feedbackForm) {
   const ratingInput = feedbackForm.querySelector("[data-rating-input]");
   const ratingLabel = feedbackForm.querySelector("[data-rating-label]");
   const feedbackStatus = feedbackForm.querySelector("[data-feedback-status]");
-  const ratingMessages = ["Needs improvement", "Fair", "Good", "Very good", "Wonderful"];
+  const ratingMessages = ["Could be better", "Fair", "Good", "Very good", "Wonderful"];
 
   function selectRating(rating) {
     ratingInput.value = String(rating);
@@ -116,7 +116,7 @@ if (feedbackForm) {
     event.preventDefault();
 
     if (!ratingInput.value) {
-      feedbackStatus.textContent = "Please choose a star rating before sending.";
+      feedbackStatus.textContent = "Please choose a star rating before sending your review.";
       ratingButtons[0].focus();
       return;
     }
@@ -128,7 +128,7 @@ if (feedbackForm) {
     const submitButton = feedbackForm.querySelector(".feedback-submit");
 
     submitButton.disabled = true;
-    submitButton.textContent = "Submitting...";
+    submitButton.textContent = "Sending...";
     feedbackStatus.textContent = "";
 
     try {
@@ -155,12 +155,12 @@ if (feedbackForm) {
         button.setAttribute("aria-pressed", "false");
       });
       ratingLabel.textContent = "Select your rating";
-      feedbackStatus.textContent = "Thank you! Your feedback was saved and is awaiting approval.";
+      feedbackStatus.textContent = "Thank you. Your review was saved and will appear after approval.";
     } catch (error) {
-      feedbackStatus.textContent = "We could not save your feedback. Please try again.";
+      feedbackStatus.textContent = "We could not save your review. Please try again.";
     } finally {
       submitButton.disabled = false;
-      submitButton.textContent = "Submit feedback";
+      submitButton.textContent = "Send review";
     }
   });
 }

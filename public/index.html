@@ -57,7 +57,7 @@
         <a href="#readings">Readings</a>
         <a href="#training">Training</a>
         <a href="#ngo">NGO</a>
-        <a href="#feedback">Feedback</a>
+        <a href="#feedback">Reviews</a>
         <a href="#contact">Contact</a>
       </nav>
     </header>
@@ -283,19 +283,19 @@
 
       <section class="feedback-section" id="feedback" aria-labelledby="feedback-title">
         <div class="feedback-copy">
-          <p class="eyebrow">Share your experience</p>
-          <h2 id="feedback-title">How was your session?</h2>
+          <p class="eyebrow">Client reviews</p>
+          <h2 id="feedback-title">Share your experience with Baku.</h2>
           <p>
-            Your feedback helps Baku improve each reading and class. Choose a star rating and share a short note if you would like.
+            A short note helps future clients understand what to expect from a reading or class. Please choose a rating; your name and message are optional.
           </p>
           <div class="feedback-promise">
-            <strong>Thank you for your trust.</strong>
-            <span>Your feedback is saved privately and appears publicly only after approval.</span>
+            <strong>Private until reviewed.</strong>
+            <span>Only approved reviews are shown publicly on the website.</span>
           </div>
         </div>
         <form class="feedback-form" data-feedback-form>
           <fieldset>
-            <legend>Your rating <span aria-hidden="true">*</span></legend>
+            <legend>Rate your experience <span aria-hidden="true">*</span></legend>
             <div class="star-rating" data-star-rating aria-label="Choose a rating from 1 to 5 stars">
               <button type="button" data-rating="1" aria-label="1 star" aria-pressed="false">&#9733;</button>
               <button type="button" data-rating="2" aria-label="2 stars" aria-pressed="false">&#9733;</button>
@@ -307,26 +307,26 @@
             <input type="hidden" name="rating" data-rating-input required />
           </fieldset>
           <label>
-            <span>Your name <small>(optional)</small></span>
-            <input type="text" name="name" maxlength="60" autocomplete="name" placeholder="How should we address you?" />
+            <span>Name <small>(optional)</small></span>
+            <input type="text" name="name" maxlength="60" autocomplete="name" placeholder="Your name or initials" />
           </label>
           <label>
-            <span>Your feedback <small>(optional)</small></span>
-            <textarea name="message" rows="4" maxlength="500" placeholder="Tell us what felt helpful..."></textarea>
+            <span>Your note <small>(optional)</small></span>
+            <textarea name="message" rows="4" maxlength="500" placeholder="What felt helpful, clear, or reassuring?"></textarea>
           </label>
-          <button class="button primary feedback-submit" type="submit">Submit feedback</button>
+          <button class="button primary feedback-submit" type="submit">Send review</button>
           <p class="feedback-status" data-feedback-status aria-live="polite"></p>
         </form>
       </section>
 
       <section class="recent-feedback" aria-labelledby="recent-feedback-title">
         <div class="section-heading">
-          <p class="eyebrow">Kind words</p>
-          <h2 id="recent-feedback-title">Recent feedback</h2>
-          <p>Experiences shared by clients after their readings and classes.</p>
+          <p class="eyebrow">Client voices</p>
+          <h2 id="recent-feedback-title">What clients are saying</h2>
+          <p>Approved notes from people who booked readings or joined classes.</p>
         </div>
         <div class="feedback-list" data-feedback-list>
-          <p class="feedback-loading">Loading recent feedback...</p>
+          <p class="feedback-loading">Loading reviews...</p>
         </div>
       </section>
 
