@@ -4,6 +4,8 @@
 
 alter table public.feedback enable row level security;
 
+grant select, insert on table public.feedback to anon;
+
 drop policy if exists "Public can read published feedback" on public.feedback;
 create policy "Public can read published feedback"
 on public.feedback
